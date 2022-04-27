@@ -7,8 +7,8 @@ class CG1_4DLine
 {
 public:
     CG1_4DLine();
-    CG1_4DLine(CG1_4DVector point1, CG1_4DVector point2);
-    CG1_4DLine(const CG1_4DVector &point1, const CG1_4DVector &point2);
+    CG1_4DLine(CG1_4DVector point0, CG1_4DVector point1);
+    CG1_4DLine(const CG1_4DVector &point0, const CG1_4DVector &point1);
 
     const CG1_4DVector &getPoint1() const;
     void setPoint1(const CG1_4DVector &newPoint1);

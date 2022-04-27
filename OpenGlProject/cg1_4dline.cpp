@@ -1,6 +1,6 @@
 #include "cg1_4dline.h"
 
-CG1_4DLine::CG1_4DLine(const CG1_4DVector &point1, const CG1_4DVector &point2) : point1(point1), point2(point2)
+CG1_4DLine::CG1_4DLine(const CG1_4DVector &point0, const CG1_4DVector &point1) : point0(point0), point1(point1)
 {}
 
 CG1_4DLine::CG1_4DLine()
@@ -50,7 +50,7 @@ void CG1_4DLine::SetZ0(double newZ0){
 void CG1_4DLine::SetY1(double newY1){
     point0.SetXYZ(point1.GetX(), newY1, point1.GetZ());
 }
-void CG1_4DLine::SetX(double newX1){
+void CG1_4DLine::SetX1(double newX1){
     point1.SetXYZ(newX1, point1.GetY(), point1.GetZ());
 }
 void CG1_4DLine::SetZ1(double newZ1){
