@@ -1,4 +1,4 @@
-QT       += core gui opengl
+QT       += core gui opengl 3dcore 3drender 3dinput 3dlogic 3dextras 3danimation
 
 
 

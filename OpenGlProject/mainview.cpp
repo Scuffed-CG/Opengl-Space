@@ -2,6 +2,13 @@
 #include "Util.h"
 #include <cmath>
 
+#include <Qt3DCore>
+#include <Qt3DRender>
+#include <Qt3DInput>
+#include <Qt3DLogic>
+#include <Qt3DExtras>
+#include <Qt3DAnimation>
+
 
 
 
