@@ -16,6 +16,9 @@
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{018ffc9a-0b94-47c9-81ed-1c5d14fc4f27}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\textures">
+      <UniqueIdentifier>{e2fa8dad-fdb1-4b5e-9298-9d5797231053}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -36,12 +39,27 @@
     <ClCompile Include="VAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="stb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="default.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="light.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="light.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>
@@ -58,5 +76,40 @@
     <ClInclude Include="VAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="mc_grass_texture.jpg">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="C:\Users\denze\Downloads\grass_block.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="C:\Users\denze\Pictures\obama_texture.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="obama_texture2.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="dirt_block.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="sandstone_block.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="glowstone.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="planksSpec.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="planks.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
