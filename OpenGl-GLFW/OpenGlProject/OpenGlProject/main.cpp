@@ -117,20 +117,23 @@ int main()
 
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
+	double prev_time = glfwGetTime();
+	
 
 	while (!glfwWindowShouldClose(window))
 	{
-
+		double curr_time = glfwGetTime();
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-		camera.Inputs(window);
+		if (curr_time - prev_time  >= (double)(1 / 60)) {
+			camera.Inputs(window);
+		}
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		backpack.Draw(shaderProgram, camera);
 		
-		//light.Draw(lightShader, camera);
+		light.Draw(lightShader, camera, glm::mat4(1.0f), glm::vec3(1.0f), glm::quat(), glm::vec3(1.0f));
 
 
 		
