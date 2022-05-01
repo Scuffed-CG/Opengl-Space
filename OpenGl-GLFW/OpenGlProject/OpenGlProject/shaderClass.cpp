@@ -61,7 +61,7 @@ void Shader::compileErrors(unsigned int shader, const char* type)
 	char infoLog[1024];
 	if (type != "PROGRAM")
 	{
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
+		glGetShaderiv(shader, GL_LINK_STATUS, &hasCompiled);
 		if (hasCompiled == GL_FALSE)
 		{
 			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
