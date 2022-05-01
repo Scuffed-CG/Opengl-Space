@@ -20,6 +20,8 @@ public:
 	glm::mat4 cameraMatrix = glm::mat4(1.0f);
 
 	bool firstClick = true;
+	bool wireframeMode = false;
+	bool isWireframeModeButtonReleased = true;
 
 	int width;
 	int height;

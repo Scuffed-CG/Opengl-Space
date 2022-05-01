@@ -29,6 +29,18 @@ void Camera::Matrix(Shader& shader, const char* uniform)
 
 void Camera::Inputs(GLFWwindow* window)
 {
+	if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
+	{
+		if (isWireframeModeButtonReleased) {
+			wireframeMode = !wireframeMode;
+			glPolygonMode(GL_FRONT_AND_BACK, wireframeMode ? GL_LINE : GL_FILL);
+			isWireframeModeButtonReleased = false;
+		}
+	}
+	else if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE)
+	{
+		isWireframeModeButtonReleased = true;
+	}
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
 		Position += speed * Orientation;
@@ -55,11 +67,11 @@ void Camera::Inputs(GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
-		speed = 0.004f;
+		speed = 0.4f;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
 	{
-		speed = 0.001f;
+		speed = 0.1f;
 	}
 
 
