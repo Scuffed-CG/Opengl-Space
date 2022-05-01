@@ -75,9 +75,9 @@ void Mesh::Draw
 	glm::mat4 rot = glm::mat4(1.0f);
 	glm::mat4 sca = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(translation.x, translation.y, translation.z));
-	//sca = glm::scale(sca, glm::vec3(scale.x, scale.y, scale.z));
-	float aaaaaaaah[4] = { rotation.w, rotation.x, rotation.y, rotation.z };
-	rot = glm::mat4_cast(glm::make_quat(aaaaaaaah));
+	sca = glm::scale(sca, glm::vec3(scale.x, scale.y, scale.z));
+	float rotMatrix[4] = { rotation.w, rotation.x, rotation.y, rotation.z };
+	rot = glm::mat4_cast(glm::make_quat(rotMatrix));
 
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
