@@ -35,10 +35,13 @@ void Model::processNode(aiNode* node, const aiScene* scene)
         aiVector3t<float> scale;
         aiMatrix4x4 matrix = node->mTransformation;
         matrix.Decompose(scale, rotation, translation);
-        translationsMeshes.push_back(translation);
-        rotationsMeshes.push_back(rotation);
-        scalesMeshes.push_back(scale);
-        matricesMeshes.push_back(matrix);
+        translationsMeshes.push_back(glm::vec3(translation.x, translation.y, translation.z));
+        rotationsMeshes.push_back(glm::quat(rotation.w, rotation.x, rotation.y, rotation.z));
+        scalesMeshes.push_back(glm::vec3(scale.x, scale.y, scale.z));
+        matricesMeshes.push_back(glm::mat4( matrix.a1, matrix.b1, matrix.c1, matrix.d1, 
+                                            matrix.a2, matrix.b2, matrix.c2, matrix.d2, 
+                                            matrix.a3, matrix.b3, matrix.c3, matrix.d3, 
+                                            matrix.a4, matrix.b4, matrix.c4, matrix.d4));
     }
 
     for (unsigned int i = 0; i < node->mNumChildren; i++)

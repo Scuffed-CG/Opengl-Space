@@ -21,10 +21,10 @@ public:
     std::vector<Mesh> meshes;
 private:
     // model data
-    std::vector<aiVector3t<float>> translationsMeshes;
-    std::vector<aiQuaterniont<float>> rotationsMeshes;
-    std::vector<aiVector3t<float>> scalesMeshes;
-    std::vector<aiMatrix4x4> matricesMeshes;
+    std::vector<glm::vec3> translationsMeshes;
+    std::vector<glm::quat> rotationsMeshes;
+    std::vector<glm::vec3> scalesMeshes;
+    std::vector<glm::mat4> matricesMeshes;
 
     std::string directory;
 
