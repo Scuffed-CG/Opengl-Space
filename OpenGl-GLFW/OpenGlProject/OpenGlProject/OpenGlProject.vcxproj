@@ -80,8 +80,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Github\project-opengl-denzell-bernd\OpenGl-GLFW\OpenGlProject\Libraries\include;D:\Repositories\project-opengl-denzell-bernd\OpenGl-GLFW\OpenGlProject\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Github\project-opengl-denzell-bernd\OpenGl-GLFW\OpenGlProject\Libraries\lib;D:\Repositories\project-opengl-denzell-bernd\OpenGl-GLFW\OpenGlProject\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -122,12 +122,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Github\project-opengl-denzell-bernd\OpenGl-GLFW\OpenGlProject\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\GitHub\project-opengl-denzell-bernd\OpenGl-GLFW\OpenGlProject\Libraries\include;D:\Github\project-opengl-denzell-bernd\OpenGl-GLFW\OpenGlProject\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\GitHub\project-opengl-denzell-bernd\OpenGl-GLFW\OpenGlProject\Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -186,6 +187,7 @@
     <Image Include="planks.png" />
     <Image Include="planksSpec.png" />
     <Image Include="sandstone_block.png" />
+    <Image Include="white.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

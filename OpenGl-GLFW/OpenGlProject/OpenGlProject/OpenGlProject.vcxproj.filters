@@ -129,5 +129,8 @@
     <Image Include="planks.png">
       <Filter>Resource Files\textures</Filter>
     </Image>
+    <Image Include="white.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

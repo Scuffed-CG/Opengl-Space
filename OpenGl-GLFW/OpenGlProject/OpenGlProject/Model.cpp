@@ -7,13 +7,13 @@ Model::Model(std::string path)
 void Model::Draw(Shader& shader, Camera& camera) 
 {
     for (unsigned int i = 0; i < meshes.size(); i++){
-        meshes[i].Draw(shader, camera, matricesMeshes[i], translationsMeshes[i], rotationsMeshes[i], scalesMeshes[i]);
+        meshes[i].Draw(shader, camera, matricesMeshes[i]);
     }
 }
 void Model::loadModel(std::string path)
 {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -34,10 +34,6 @@ void Model::processNode(aiNode* node, const aiScene* scene)
         aiQuaterniont<float> rotation;
         aiVector3t<float> scale;
         aiMatrix4x4 matrix = node->mTransformation;
-        matrix.Decompose(scale, rotation, translation);
-        translationsMeshes.push_back(glm::vec3(translation.x, translation.y, translation.z));
-        rotationsMeshes.push_back(glm::quat(rotation.w, rotation.x, rotation.y, rotation.z));
-        scalesMeshes.push_back(glm::vec3(scale.x, scale.y, scale.z));
         matricesMeshes.push_back(glm::mat4( matrix.a1, matrix.b1, matrix.c1, matrix.d1, 
                                             matrix.a2, matrix.b2, matrix.c2, matrix.d2, 
                                             matrix.a3, matrix.b3, matrix.c3, matrix.d3, 
@@ -49,6 +45,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
         processNode(node->mChildren[i], scene);
     }
 }
+
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
@@ -76,10 +73,22 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
             glm::vec2 vec;
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
-            vertex.texUV = vec;
+            vertex.texCoords = vec;
+
+            // tangent
+            vector.x = mesh->mTangents[i].x;
+            vector.y = mesh->mTangents[i].y;
+            vector.z = mesh->mTangents[i].z;
+            vertex.tangent = vector;
+
+            // bitangent
+            vector.x = mesh->mBitangents[i].x;
+            vector.y = mesh->mBitangents[i].y;
+            vector.z = mesh->mBitangents[i].z;
+            vertex.bitangent = vector;
         }
         else{
-            vertex.texUV = glm::vec2(0.0f, 0.0f);
+            vertex.texCoords = glm::vec2(0.0f, 0.0f);
         }
 
         vertices.push_back(vertex);
@@ -97,6 +106,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
             aiTextureType_DIFFUSE, "diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
         std::vector<Texture> specularMaps = loadMaterialTextures(material,
             aiTextureType_SPECULAR, "specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
@@ -107,15 +117,17 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 {
     std::vector<Texture> textures;
+
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
         mat->GetTexture(type, i, &str);
-        // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
+        std::string texPath = directory + '/' + str.C_Str();
+
         bool skip = false;
-        for (unsigned int j = 0; j < textures_loaded.size(); j++)
+        for (unsigned int j = 0; j < loadedTexName.size(); j++)
         {
-            if (std::strcmp(textures_loaded[j].path, str.C_Str()) == 0)
+            if (loadedTexName[j] == texPath)
             {
                 textures.push_back(textures_loaded[j]);
                 skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
@@ -123,11 +135,10 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
             }
         }
         if (!skip)
-        {   // if texture hasn't been loaded already, load it
-            Texture texture(str.C_Str(), typeName.c_str(), i);
-            texture.Bind();
-            texture.Delete();
+        {
+            Texture texture(texPath.c_str(), typeName.c_str(), textures_loaded.size());
             textures.push_back(texture);
+            loadedTexName.push_back(texPath);
             textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
         }
     }

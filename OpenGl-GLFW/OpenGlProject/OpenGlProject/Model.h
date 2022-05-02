@@ -17,16 +17,15 @@ class Model
 public:
     Model(std::string path);
     void Draw(Shader& shader, Camera& camera);
-    std::vector<Texture> textures_loaded;
-    std::vector<Mesh> meshes;
+
 private:
-    // model data
-    std::vector<glm::vec3> translationsMeshes;
-    std::vector<glm::quat> rotationsMeshes;
-    std::vector<glm::vec3> scalesMeshes;
     std::vector<glm::mat4> matricesMeshes;
 
     std::string directory;
+
+    std::vector<std::string> loadedTexName;
+    std::vector<Texture> textures_loaded;
+    std::vector<Mesh> meshes;
 
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);

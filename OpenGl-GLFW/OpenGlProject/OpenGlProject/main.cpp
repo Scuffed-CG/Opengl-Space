@@ -73,20 +73,12 @@ int main()
 	glViewport(0, 0, width, height);
 
 
-	
-	Texture textures[]
-	{
-		Texture("planks.png", "diffuse", 0),
-		Texture("planksSpec.png", "specular", 1)
-	};
-
-
 	Shader shaderProgram("default.vert", "default.frag");
 
 	Shader lightShader("light.vert", "light.frag");
 	std::vector <Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
 	std::vector <GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
-	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+	std::vector <Texture> tex;
 	Mesh light(lightVerts, lightInd, tex);
 
 
@@ -109,7 +101,11 @@ int main()
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 
-	Model backpack("Survival_BackPack_2/Survival_BackPack_2.fbx");
+	//Model backpack("backpack/backpack.obj");
+	//Model backpack("fn509-pistol/source/FN509.fbx");
+	Model backpack("painterly-hand-painted-low-poly-props-pack - Copy/source/handpaintedpropspack.fbx");
+	//Model backpack("IronMan/IronMan.obj");
+	//Model backpack("Survival_BackPack_2/Survival_BackPack_2.fbx");
 
 
 	glEnable(GL_DEPTH_TEST);

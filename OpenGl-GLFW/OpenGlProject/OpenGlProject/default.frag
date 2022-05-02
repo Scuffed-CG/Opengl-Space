@@ -8,8 +8,6 @@ in vec3 Normal;
 in vec3 color;
 in vec2 texCoord;
 
-
-
 uniform sampler2D diffuse0;
 uniform sampler2D specular0;
 uniform vec4 lightColor;
@@ -84,5 +82,5 @@ vec4 spotLight()
 
 void main()
 {
-	FragColor = spotLight();
+	FragColor = direcLight();
 }
