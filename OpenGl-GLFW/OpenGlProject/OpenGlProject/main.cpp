@@ -1,8 +1,8 @@
 #include"Model.h"
+#include <filesystem>
 
-
-const unsigned int width = 800;
-const unsigned int height = 800;
+const unsigned int width = 1920;
+const unsigned int height = 1080;
 
 Vertex vertices[] =
 { //               COORDINATES           /            COLORS          /           TexCoord         /       NORMALS         //
@@ -99,16 +99,22 @@ int main()
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
-
-	//Model backpack("backpack/backpack.obj");
+	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
+	std::string modelDir = "/Models/";
+	Model backpack(parentDir + modelDir +"backpack/backpack.obj");
+	//Model suit("suit_model/nanosuit.obj");
+	//Model backpack("C:/Users/denze/Desktop/New Folder/untitled.obj");
 	//Model backpack("fn509-pistol/source/FN509.fbx");
-	Model backpack("painterly-hand-painted-low-poly-props-pack - Copy/source/handpaintedpropspack.fbx");
 	//Model backpack("IronMan/IronMan.obj");
 	//Model backpack("Survival_BackPack_2/Survival_BackPack_2.fbx");
 
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
@@ -127,9 +133,10 @@ int main()
 		}
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
+		//suit.Draw(shaderProgram, camera);
 		backpack.Draw(shaderProgram, camera);
 		
-		light.Draw(lightShader, camera, glm::mat4(1.0f), glm::vec3(1.0f), glm::quat(), glm::vec3(1.0f));
+		light.Draw(lightShader, camera, glm::mat4(1.0f));
 
 
 		

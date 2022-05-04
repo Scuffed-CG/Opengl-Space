@@ -1,12 +1,12 @@
 #include"Texture.h"
 
-Texture::Texture(const char* image, const char* texType, GLuint slot)
+Texture::Texture(std::string image, std::string texType, GLuint slot)
 {
 	type = texType;
 	path = image;
 	int widthImg, heightImg, numColCh;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
+	unsigned char* bytes = stbi_load(image.c_str(), &widthImg, &heightImg, &numColCh, 0);
 
 	glGenTextures(1, &ID);
 	glActiveTexture(GL_TEXTURE0 + slot);
