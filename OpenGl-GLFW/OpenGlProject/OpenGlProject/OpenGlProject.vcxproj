@@ -164,7 +164,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />
+    <None Include="default.geom" />
     <None Include="default.vert" />
+    <None Include="grass.frag" />
     <None Include="light.frag" />
     <None Include="light.vert" />
     <None Include="Survival_BackPack_2\Survival_BackPack_2.fbx" />

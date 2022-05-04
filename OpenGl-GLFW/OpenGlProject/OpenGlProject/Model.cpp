@@ -4,10 +4,17 @@ Model::Model(std::string path)
 {
     loadModel(path);
 }
-void Model::Draw(Shader& shader, Camera& camera) 
+
+void Model::Draw(
+    Shader& shader,
+    Camera& camera,
+    glm::vec3 translation,
+    glm::quat rotation,
+    glm::vec3 scale
+)
 {
     for (unsigned int i = 0; i < meshes.size(); i++){
-        meshes[i].Draw(shader, camera, matricesMeshes[i]);
+        meshes[i].Draw(shader, camera, matricesMeshes[i], translation, rotation, scale);
     }
 }
 void Model::loadModel(std::string path)
@@ -106,6 +113,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
             aiTextureType_DIFFUSE, "diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+        std::vector<Texture> normalMaps = loadMaterialTextures(material,
+            aiTextureType_NORMALS, "normal");
+        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
         std::vector<Texture> specularMaps = loadMaterialTextures(material,
             aiTextureType_SPECULAR, "specular");

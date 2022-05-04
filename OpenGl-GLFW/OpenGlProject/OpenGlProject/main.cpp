@@ -73,35 +73,29 @@ int main()
 	glViewport(0, 0, width, height);
 
 
-	Shader shaderProgram("default.vert", "default.frag");
-
-	Shader lightShader("light.vert", "light.frag");
-	std::vector <Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
-	std::vector <GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
-	std::vector <Texture> tex;
-	Mesh light(lightVerts, lightInd, tex);
-
+	Shader shaderProgram("default.vert", "default.frag", "default.geom");
+	Shader grassProgram("default.vert", "grass.frag");
+	//Shader lightShader("light.vert", "light.frag");
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.75f, 0.5f, 0.5f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
-	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::mat4 objectModel = glm::mat4(1.0f);
-	objectModel = glm::translate(objectModel, objectPos);
-
-
-	lightShader.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
-	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	shaderProgram.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+	//grassProgram.Activate();
+	//glUniform4f(glGetUniformLocation(grassProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	//glUniform3f(glGetUniformLocation(grassProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
 	std::string modelDir = "/Models/";
-	Model backpack(parentDir + modelDir +"backpack/backpack.obj");
+
+	//Model grass(parentDir + modelDir + "grass/scene.gltf");
+	//Model ground(parentDir + modelDir + "ground/scene.gltf");
+	Model backpack(parentDir + modelDir + "backpack/backpack.obj");
 	//Model suit("suit_model/nanosuit.obj");
 	//Model backpack("C:/Users/denze/Desktop/New Folder/untitled.obj");
 	//Model backpack("fn509-pistol/source/FN509.fbx");
@@ -111,7 +105,7 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	glCullFace(GL_FRONT);
 	glFrontFace(GL_CCW);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -134,12 +128,10 @@ int main()
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		//suit.Draw(shaderProgram, camera);
+		glCullFace(GL_BACK);
 		backpack.Draw(shaderProgram, camera);
-		
-		light.Draw(lightShader, camera, glm::mat4(1.0f));
+		glCullFace(GL_FRONT);
 
-
-		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -148,7 +140,7 @@ int main()
 
 
 	shaderProgram.Delete();
-	lightShader.Delete();
+
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
