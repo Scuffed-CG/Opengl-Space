@@ -66,7 +66,7 @@ int main()
 	std::string modelDir = "/Models/";
 
 	Model crow((parentDir + modelDir + "crow/scene.gltf"));
-	//Model backpack((parentDir + modelDir + "backpack/backpack.obj"));
+	Model backpack((parentDir + modelDir + "backpack/backpack.obj"));
 
 	unsigned int rectVAO, rectVBO;
 	glGenVertexArrays(1, &rectVAO);
@@ -78,6 +78,8 @@ int main()
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	//-----------------------------------------------------------------Testing zone-------------------------------------------------------------------
 
 	Curve curve1, curve2, curve3, curve4;
 
@@ -193,12 +195,9 @@ int main()
 
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-		//glCullFace(GL_BACK);
-		//backpack.Draw(shaderProgram, camera);
-		//glCullFace(GL_FRONT);
-
 		glCullFace(GL_BACK);
 		crow.Draw(shaderProgram, camera);
+		glCullFace(GL_FRONT);
 
 
 		//-----------------------------------------------------------------Testing zone-------------------------------------------------------------------
@@ -217,9 +216,10 @@ int main()
 
 		//-----------------------------------------------------------------End of Testing zone------------------------------------------------------------
 
-
+		glCullFace(GL_BACK);
 		backpack.Draw(shaderProgram, camera, trans);
 		glCullFace(GL_FRONT);
+		
 		GLint mode;
 		glGetIntegerv(GL_POLYGON_MODE, &mode);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
