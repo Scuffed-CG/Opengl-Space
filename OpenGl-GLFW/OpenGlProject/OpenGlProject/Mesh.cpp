@@ -58,7 +58,6 @@ void Mesh::Draw
 		textures[i].Bind();
 	}
 
-	
 	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 	camera.Matrix(shader, "camMatrix");
 
@@ -77,12 +76,4 @@ void Mesh::Draw
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-	glActiveTexture(0);
-	glUseProgram(0);
-	VAO.Unbind();
-	for (unsigned int i = 0; i < textures.size(); i++)
-	{
-		textures[i].Unbind();;
-	}
 }

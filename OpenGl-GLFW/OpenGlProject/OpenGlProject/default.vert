@@ -12,6 +12,9 @@ out DATA
 	vec3 color;
 	vec2 texCoord;
     mat4 projection;
+	mat4 model;
+	vec3 lightPos;
+	vec3 camPos;
 } data_out;
 
 uniform mat4 camMatrix;
@@ -21,6 +24,9 @@ uniform mat4 translation;
 uniform mat4 rotation;
 uniform mat4 scale;
 
+uniform vec3 lightPos;
+uniform vec3 camPos;
+
 
 void main()
 {
@@ -29,4 +35,7 @@ void main()
 	data_out.color = aColor;
 	data_out.texCoord = aTex;
 	data_out.projection = camMatrix;
+	data_out.model = model * translation * rotation * scale;
+	data_out.lightPos = lightPos;
+	data_out.camPos = camPos;
 }
