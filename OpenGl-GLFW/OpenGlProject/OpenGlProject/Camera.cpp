@@ -109,3 +109,8 @@ void Camera::Inputs(GLFWwindow* window)
 		firstClick = true;
 	}
 }
+
+
+void Camera::setPosition(glm::vec3 pos) {
+	Position = pos;
+}

@@ -1,60 +1,55 @@
-#include <vector>
-#include "glm/glm.hpp"
-#include <glad/glad.h>
+#include "Curve.h"
 
-class BezierCurve {
-public:
-	void RegisterPoint(float x, float y) {
-		points.push_back({ x,y });
-	}
+void Curve::addControlPoint(float x, float y, float z) {
+	ctrl_points.push_back({ x,y,z });
+}
 
-	void ClearPoints() {
-		points.clear();
-	}
+void Curve::clearControlPoints() {
+	ctrl_points.clear();
+}
 
-	std::vector<glm::vec2> GetCurve() {
-		std::vector<glm::vec2> curvePoints;
+std::vector<glm::vec3> Curve::getCurve() {
+	std::vector<glm::vec3> curvePoints;
 
-		float curveStart = points[0].x;
+	float curveLength = getCurveLength();
 
-		float curveLength = 0.0f;
-
-		for (int i = 0; i < points.size() - 1; i++)
-		{
-			curveLength += abs(sqrt(pow(points[i + 1].x - points[i].x, 2) + pow(points[i + 1].y - points[i].y, 2)));
-		}
-
-		for (float currentPoint = 0.0f; currentPoint < curveLength; ++currentPoint)
-		{
-			float t = currentPoint / curveLength;
-
-			int n = points.size() - 1;
-			glm::vec2 point(0.0f, 0.0f);
-
-			for (int i = 0; i <= n; i++)
-			{
-				point += GLfloat(binomialCoefficient(n, i) * pow(1 - t, n - i) * pow(t, i)) * points[i];
-			}
-
-			curvePoints.push_back(point);
-		}
-
-		return curvePoints;
-	}
-
-	std::vector<glm::vec2> points;
-
-private:
-
-	int factorial(int x) {
-		if (x > 1)
-			return x * factorial(x - 1);
-		else
-			return 1;
-	}
-
-	int binomialCoefficient(int n, int k)
+	for (float currentPoint = 0.0f; currentPoint < curveLength; ++currentPoint)
 	{
-		return factorial(n) / (factorial(k) * factorial(n - k));
+		float t = currentPoint / curveLength;
+		int n = ctrl_points.size() - 1;
+		glm::vec3 point(0.0f, 0.0f, 0.0f);
+
+		for (int i = 0; i <= n; i++)
+		{
+			point += GLfloat(binCo(n, i) * pow(1 - t, n - i) * pow(t, i)) * ctrl_points[i];
+		}
+
+		curvePoints.push_back(point);
 	}
-};
+
+	return curvePoints;
+}
+
+float Curve::getCurveLength() {
+
+	float curveLength = 0.0f;
+
+	for (int i = 0; i < ctrl_points.size() - 1; i++)
+	{
+		curveLength += abs(sqrt(pow(ctrl_points[i + 1].x - ctrl_points[i].x, 2) + pow(ctrl_points[i + 1].y - ctrl_points[i].y, 2) + pow(ctrl_points[i + 1].z - ctrl_points[i].z, 2)));
+	}
+
+	return curveLength;
+}
+
+int Curve::fact(int x) {
+	if (x > 1)
+		return x * fact(x - 1);
+	else
+		return 1;
+}
+
+int Curve::binCo(int n, int k)
+{
+	return fact(n) / (fact(k) * fact(n - k));
+}
