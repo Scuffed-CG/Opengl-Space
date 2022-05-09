@@ -37,7 +37,7 @@ Texture::Texture(std::string image, std::string texType, GLuint slot)
 		(
 			GL_TEXTURE_2D,
 			0,
-			GL_RGBA,
+			GL_SRGB_ALPHA,
 			widthImg,
 			heightImg,
 			0,
@@ -50,7 +50,7 @@ Texture::Texture(std::string image, std::string texType, GLuint slot)
 		(
 			GL_TEXTURE_2D,
 			0,
-			GL_RGBA,
+			GL_SRGB,
 			widthImg,
 			heightImg,
 			0,
@@ -63,7 +63,7 @@ Texture::Texture(std::string image, std::string texType, GLuint slot)
 		(
 			GL_TEXTURE_2D,
 			0,
-			GL_RGBA,
+			GL_SRGB,
 			widthImg,
 			heightImg,
 			0,

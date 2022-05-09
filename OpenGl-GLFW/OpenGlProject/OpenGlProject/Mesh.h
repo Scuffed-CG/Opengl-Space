@@ -1,7 +1,7 @@
 #ifndef MESH_CLASS_H
 #define MESH_CLASS_H
 
-#include<string>
+#include <string>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>       
 #include <assimp/postprocess.h> 

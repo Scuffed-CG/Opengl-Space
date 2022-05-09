@@ -5,6 +5,52 @@
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
+float gamma = 2.2f;
+
+std::vector<Vertex> vertices =
+{
+	Vertex{glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f)}
+};
+
+
+
+std::vector<GLuint> indices =
+{
+	0, 1, 2,
+	0, 2, 3
+};
+
+std::vector<Vertex> lightVertices =
+{ //     COORDINATES     //
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)}
+};
+
+std::vector<GLuint> lightIndices =
+{
+	0, 1, 2,
+	0, 2, 3,
+	0, 4, 7,
+	0, 7, 3,
+	3, 7, 6,
+	3, 6, 2,
+	2, 6, 5,
+	2, 5, 1,
+	1, 5, 4,
+	1, 4, 0,
+	4, 5, 6,
+	4, 6, 7
+};
+
 
 int main()
 {
@@ -32,25 +78,44 @@ int main()
 
 
 	Shader shaderProgram("default.vert", "default.frag", "default.geom");
-	Shader framebufferProgram("framebuffer.vert", "framebuffer.frag");
+	Shader lightProgram("light.vert", "light.frag");
 
-	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec4 lightColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
 
 	shaderProgram.Activate();
-	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	shaderProgram.setVec3("dirLight.color", 1.0f, 1.0f, 1.0f);
+	shaderProgram.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+	shaderProgram.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+	shaderProgram.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+	shaderProgram.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);	
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CCW);
+	shaderProgram.setVec3("pointLights[0].position", 0.5f, 0.5f, 0.5f);
+	shaderProgram.setVec3("pointLights[0].color", lightColor.r, lightColor.g, lightColor.b);
+	shaderProgram.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+	shaderProgram.setVec3("pointLights[0].diffuse", 0.4f, 0.4f, 0.4f);
+	shaderProgram.setVec3("pointLights[0].specular", 0.5f, 0.5f, 0.5f);
+	shaderProgram.setFloat("pointLights[0].constant", 1.0f);
+	shaderProgram.setFloat("pointLights[0].linear", 0.09f);
+	shaderProgram.setFloat("pointLights[0].quadratic", 0.032f);
+
+	lightProgram.Activate();
+	lightProgram.setVec4("lightColor", lightColor);
 
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
 
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
 	std::string modelDir = "/Models/";
+
+	std::vector<Texture> textures =
+	{
+		Texture((parentDir + modelDir + "/textures/diffuse.png").c_str(), "diffuse", 0),
+		Texture((parentDir + modelDir + "/textures/normal.png").c_str(), "normal", 1),
+	};
+
+	Mesh plane(vertices, indices, textures);
+	Mesh lightCube(lightVertices, lightIndices, textures);
 
 	Model backpack((parentDir + modelDir + "backpack/backpack.obj"));
 	Model crow((parentDir + modelDir + "crow/scene.gltf"));
@@ -100,10 +165,11 @@ int main()
 	//-----------------------------------------------------------------End of Testing zone------------------------------------------------------------
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CCW);
-
+	
 	double prev_time = glfwGetTime();
 
 	//Temp vars
@@ -114,7 +180,10 @@ int main()
 	bool moveBackpack = false;
 	int currentPoint = 0;
 	//End Temp vars
+	
 	Framebuffer framebuffer(width, height, "framebuffer.vert", "framebuffer.frag");
+
+
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -122,7 +191,7 @@ int main()
 
 		framebuffer.Bind();
 
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+		glClearColor(pow(0.07f, gamma), pow(0.13f, gamma), pow(0.17f, gamma), 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 		
@@ -162,12 +231,17 @@ int main()
 
 		//-----------------------------------------------------------------End of Testing zone------------------------------------------------------------
 
+		glDisable(GL_CULL_FACE);
+		glm::mat4 lightModel = glm::mat4(1.0f);
+		lightModel = glm::translate(lightModel, lightPos);
+		lightCube.Draw(lightProgram, camera, lightModel);
+		glEnable(GL_CULL_FACE);
+
 		glCullFace(GL_BACK);
 
-		crow.Draw(shaderProgram, camera);
 		backpack.Draw(shaderProgram, camera);
-		
-		
+		crow.Draw(shaderProgram, camera);
+
 		glCullFace(GL_FRONT);
 		
 		GLint mode;

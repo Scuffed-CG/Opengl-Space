@@ -165,6 +165,7 @@
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="blur.frag" />
     <None Include="default.frag" />
     <None Include="default.geom" />
     <None Include="default.vert" />
