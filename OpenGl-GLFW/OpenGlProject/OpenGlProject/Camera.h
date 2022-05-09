@@ -20,8 +20,6 @@ public:
 	glm::mat4 cameraMatrix = glm::mat4(1.0f);
 
 	bool firstClick = true;
-	bool wireframeMode = false;
-	bool isWireframeModeButtonReleased = true;
 
 	int width;
 	int height;
@@ -35,5 +33,15 @@ public:
 	void Matrix(Shader& shader, const char* uniform);
 	void Inputs(GLFWwindow* window);
 	void setPosition(glm::vec3);
+	bool getMoveCamera();
+	bool getMoveObject();
+private:
+	bool wireframeMode = false;
+	bool moveCamera = false;
+	bool moveObject = true;
+
+	bool isWireframeToggleButtonReleased = true;
+	bool isFirstPersonToggleButtonReleased = true;
+	bool isObjectMovementToggleButtonReleased = true;
 };
 #endif
