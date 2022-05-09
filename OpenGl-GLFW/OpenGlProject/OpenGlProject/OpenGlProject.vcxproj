@@ -153,6 +153,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Curve.cpp" />
     <ClCompile Include="EBO.cpp" />
+    <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Curve.h" />
     <ClInclude Include="EBO.h" />
+    <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="shaderClass.h" />
