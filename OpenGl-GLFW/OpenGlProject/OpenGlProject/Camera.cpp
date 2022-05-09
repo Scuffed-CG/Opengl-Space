@@ -29,51 +29,79 @@ void Camera::Matrix(Shader& shader, const char* uniform)
 
 void Camera::Inputs(GLFWwindow* window)
 {
+	//Wireframe toggle keybind
 	if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
 	{
-		if (isWireframeModeButtonReleased) {
+		if (isWireframeToggleButtonReleased) {
 			wireframeMode = !wireframeMode;
 			glPolygonMode(GL_FRONT_AND_BACK, wireframeMode ? GL_LINE : GL_FILL);
-			isWireframeModeButtonReleased = false;
+			isWireframeToggleButtonReleased = false;
 		}
 	}
 	else if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE)
 	{
-		isWireframeModeButtonReleased = true;
+		isWireframeToggleButtonReleased = true;
 	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	//First/ third person toggle keybind
+ 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
 	{
-		Position += speed * Orientation;
+		if (isFirstPersonToggleButtonReleased) {
+			moveCamera = !moveCamera;
+			isFirstPersonToggleButtonReleased = false;
+		}
 	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	else if (glfwGetKey(window, GLFW_KEY_F) == GLFW_RELEASE)
 	{
-		Position += speed * -glm::normalize(glm::cross(Orientation, Up));
+		isFirstPersonToggleButtonReleased = true;
 	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	//Object movement toggle keybind
+	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
 	{
-		Position += speed * -Orientation;
+		if (isObjectMovementToggleButtonReleased) {
+			moveObject = !moveObject;
+			isObjectMovementToggleButtonReleased = false;
+		}
 	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	else if (glfwGetKey(window, GLFW_KEY_M) == GLFW_RELEASE)
 	{
-		Position += speed * glm::normalize(glm::cross(Orientation, Up));
-	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-	{
-		Position += speed * Up;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-	{
-		Position += speed * -Up;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-	{
-		speed = 0.04f;
-	}
-	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
-	{
-		speed = 0.01f;
+		isObjectMovementToggleButtonReleased = true;
 	}
 
+	if (!moveCamera) {
+		//Movement keybinds
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			Position += speed * Orientation;
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		{
+			Position += speed * -glm::normalize(glm::cross(Orientation, Up));
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		{
+			Position += speed * -Orientation;
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		{
+			Position += speed * glm::normalize(glm::cross(Orientation, Up));
+		}
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		{
+			Position += speed * Up;
+		}
+		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		{
+			Position += speed * -Up;
+		}
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		{
+			speed = 0.04f;
+		}
+		else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+		{
+			speed = 0.01f;
+		}
+	}
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
@@ -113,4 +141,12 @@ void Camera::Inputs(GLFWwindow* window)
 
 void Camera::setPosition(glm::vec3 pos) {
 	Position = pos;
+}
+
+bool Camera::getMoveCamera() {
+	return moveCamera;
+}
+
+bool Camera::getMoveObject() {
+	return moveObject;
 }
