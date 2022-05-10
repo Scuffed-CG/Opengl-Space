@@ -134,7 +134,7 @@ int main()
 	lineProgram.setVec4("color", 0.5f, 0.5f, 0.3f, 1.0f);
 
 //--------------------------------------initializing camera----------------------------------
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(width, height, glm::vec3(0.0f, 10.0f, 15.0f));
 
 //--------------------------------------initializing models----------------------------------
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
@@ -288,7 +288,7 @@ int main()
 		if (camera.getMoveCamera()){ //If camera is first person
 			if(firstPersonWasOff)
 				engine->play2D("Media/teleport.wav");
-			camera.setPosition(path.pathPoints[currentPoint] + glm::vec3(0.0f, 5.0f, 0.0f)); //Move camera
+			camera.setPosition(path.pathPoints[currentPoint] + glm::vec3(0.0f, 1.0f, 0.0f)); //Move camera
 			firstPersonWasOff = false; 
 			firstPersonWasOn = true;
 		}
@@ -345,7 +345,7 @@ int main()
 			spaceship.Draw(shaderProgram, camera, trans, rot, glm::vec3(0.5f));
 		earth.Draw(shaderProgram, camera, earthPos, glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(10.0f));
 		sun.Draw(shaderProgram, camera, sunPos, glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(2.0f));
-		astronaut.Draw(shaderProgram, camera, glm::vec3(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.2f));
+		astronaut.Draw(shaderProgram, camera, glm::vec3(2.0f, 3.0f, -3.0f), glm::quat(cos(M_PI_4 / 2), sin(M_PI_4 / 2), 0.0f, 0.0f), glm::vec3(0.2f));
 		glCullFace(GL_FRONT);
 
 		GLint mode;
