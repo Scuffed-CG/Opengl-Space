@@ -136,6 +136,22 @@ void Camera::Inputs(GLFWwindow* window)
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		firstClick = true;
 	}
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+	{
+		if (prevWasPressed) {
+			mouseReleased = true;
+		}
+		else
+		{
+			mouseReleased = false;
+		}
+		prevWasPressed = false;
+	}
+	else
+	{
+		prevWasPressed = true;
+		mouseReleased = false;
+	}
 }
 
 

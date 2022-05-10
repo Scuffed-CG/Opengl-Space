@@ -15,12 +15,13 @@
 class Model
 {
 public:
-    Model(std::string path);
+    Model(std::string path, unsigned int id);
     void Draw(
         Shader& shader, Camera& camera,
         glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
         glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
         glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
+    unsigned int id;
 
 private:
     std::vector<glm::mat4> matricesMeshes;

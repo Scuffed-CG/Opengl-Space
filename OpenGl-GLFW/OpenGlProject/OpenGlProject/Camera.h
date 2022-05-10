@@ -20,7 +20,7 @@ public:
 	glm::mat4 cameraMatrix = glm::mat4(1.0f);
 
 	bool firstClick = true;
-
+	bool mouseReleased = false;
 	int width;
 	int height;
 
@@ -39,7 +39,7 @@ private:
 	bool wireframeMode = false;
 	bool moveCamera = false;
 	bool moveObject = true;
-
+	bool prevWasPressed = false;
 	bool isWireframeToggleButtonReleased = true;
 	bool isFirstPersonToggleButtonReleased = true;
 	bool isObjectMovementToggleButtonReleased = true;

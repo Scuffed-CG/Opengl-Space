@@ -1,7 +1,8 @@
 #include "Model.h"
 
-Model::Model(std::string path)
+Model::Model(std::string path, unsigned int id)
 {
+    Model::id = id;
     loadModel(path);
 }
 
@@ -14,7 +15,7 @@ void Model::Draw(
 )
 {
     for (unsigned int i = 0; i < meshes.size(); i++){
-        meshes[i].Draw(shader, camera, matricesMeshes[i], translation, rotation, scale);
+        meshes[i].Draw(shader, camera, id, matricesMeshes[i], translation, rotation, scale);
     }
 }
 void Model::loadModel(std::string path)

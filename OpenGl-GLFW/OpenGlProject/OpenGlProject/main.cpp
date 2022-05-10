@@ -91,6 +91,7 @@ int main()
 
 //--------------------------------------initializing shaders----------------------------------
 	Shader shaderProgram("default.vert", "default.frag", "default.geom");
+	Shader pickProgram("default.vert", "pick.frag", "default.geom"); // hehehe
 	Shader lightProgram("light.vert", "light.frag");
 	Shader lineProgram("line.vert", "line.frag");
 
@@ -143,10 +144,10 @@ int main()
 
 	Mesh lightCube(lightVertices, lightIndices, textures);
 
-	Model astronaut((parentDir + modelDir + "astronaut/scene.gltf"));
-	Model earth((parentDir + modelDir + "earth/scene.gltf"));
-	Model sun((parentDir + modelDir + "sun/scene.gltf"));
-	Model spaceship((parentDir + modelDir + "spaceship/scene.gltf"));
+	Model astronaut((parentDir + modelDir + "astronaut/scene.gltf"), 0);
+	Model earth((parentDir + modelDir + "earth/scene.gltf"), 1);
+	Model sun((parentDir + modelDir + "sun/scene.gltf"), 2);
+	Model spaceship((parentDir + modelDir + "spaceship/scene.gltf"), 3);
 
 	std::vector<Curve> curves;
 	for (size_t i = 0; i < 4; i++)
@@ -201,6 +202,8 @@ int main()
 	bool moveBackpack = true;
 	bool firstPersonWasOff = true;
 	bool firstPersonWasOn = false;
+	bool earthWasoff = false;
+	bool sunWasoff = false;
 	bool brakesWereOff = true;
 	bool brakesWereOn = false;
 	int currentPoint = 0;
@@ -227,6 +230,55 @@ int main()
 		}
 
 		camera.updateMatrix(90.0f, 0.1f, 1000.0f);
+		//-----------------------------------------------------------------Pickking Zone-------------------------------------------------------------------
+		if (camera.mouseReleased){
+			glCullFace(GL_BACK);
+			if (!camera.getMoveCamera())// If first person don't draw the moving object
+				spaceship.Draw(pickProgram, camera, trans, rot, glm::vec3(0.5f));
+			earth.Draw(pickProgram, camera, earthPos, glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(10.0f));
+			sun.Draw(pickProgram, camera, sunPos, glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(2.0f));
+			astronaut.Draw(pickProgram, camera, glm::vec3(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.2f));
+			glCullFace(GL_FRONT);
+
+			glFlush();
+			glFinish();
+
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+			unsigned char data[4];
+			glReadPixels(width / 2, height / 2, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			int pickedID =
+				data[0] +
+				data[1] * 256 +
+				data[2] * 256 * 256;
+			//-----------------------------------------------------------------Pickking Effect Zone-------------------------------------------------------------------
+			if (pickedID == earth.id) {
+				shaderProgram.Activate();
+				if (earthWasoff) {
+					shaderProgram.setVec3("pointLights[0].color", lightColor);
+					earthWasoff = false;
+				}
+				else
+				{
+					shaderProgram.setVec3("pointLights[0].color", glm::vec3(0.0f));
+					earthWasoff = true;
+				}
+					
+			}
+			else if(pickedID == sun.id)
+			{
+				shaderProgram.Activate();
+				if (sunWasoff) {
+					shaderProgram.setVec3("pointLights[1].color", sunColor);
+					sunWasoff = false;
+				}
+				else
+				{
+					shaderProgram.setVec3("pointLights[1].color", glm::vec3(0.0f));
+					sunWasoff = true;
+				}		
+			}
+		}
 
 		//-----------------------------------------------------------------Object Movement Zone-------------------------------------------------------------------
 		if (camera.getMoveCamera()){ //If camera is first person
@@ -284,7 +336,6 @@ int main()
 
 		path.Draw(lineProgram, camera);
 
-
 		glCullFace(GL_BACK);
 		if(!camera.getMoveCamera())// If first person don't draw the moving object
 			spaceship.Draw(shaderProgram, camera, trans, rot, glm::vec3(0.5f));
@@ -292,15 +343,6 @@ int main()
 		sun.Draw(shaderProgram, camera, sunPos, glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(2.0f));
 		astronaut.Draw(shaderProgram, camera, glm::vec3(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.2f));
 		glCullFace(GL_FRONT);
-
-
-		glDisable(GL_CULL_FACE);
-		glm::mat4 lightModel = glm::mat4(1.0f);
-		lightModel = glm::translate(lightModel, earthPos);
-		lightProgram.Activate();
-		lightProgram.setVec4("lightColor", lightColor);
-		lightCube.Draw(lightProgram, camera, lightModel);
-		glEnable(GL_CULL_FACE);
 
 		GLint mode;
 		glGetIntegerv(GL_POLYGON_MODE, &mode);

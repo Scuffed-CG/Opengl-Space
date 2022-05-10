@@ -104,6 +104,12 @@
     <None Include="line.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="pick.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="pick.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shaderClass.h">
