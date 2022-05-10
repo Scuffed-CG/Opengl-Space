@@ -14,8 +14,10 @@ public:
 	float getCurveLength();
 	std::vector<glm::vec3> getCurve();
 
-private:
+	void draw();
 
+private:
+	std::vector<glm::vec3> curvePoints;
 	std::vector<glm::vec3> ctrl_points;
 
 	int fact(int x);

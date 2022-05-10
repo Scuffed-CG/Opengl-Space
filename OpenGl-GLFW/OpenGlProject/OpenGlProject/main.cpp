@@ -2,7 +2,7 @@
 
 #include"Model.h"
 #include"Framebuffer.h"
-#include"Curve.h"
+#include"Path.h"
 #include <filesystem>
 #include <cmath>
 
@@ -55,11 +55,11 @@ std::vector<GLuint> lightIndices =
 };
 
 
-std::vector<glm::vec3> getCurvePoints();
+std::vector<glm::vec3> getCurvePoints(std::vector<Curve> path);
 
 int main()
 {
-
+//--------------------------------------initializing window----------------------------------
 	glfwInit();
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -81,9 +81,10 @@ int main()
 	gladLoadGL();
 	glViewport(0, 0, width, height);
 
-
+//--------------------------------------initializing shaders----------------------------------
 	Shader shaderProgram("default.vert", "default.frag", "default.geom");
 	Shader lightProgram("light.vert", "light.frag");
+	Shader lineProgram("line.vert", "line.frag");
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -107,9 +108,13 @@ int main()
 	lightProgram.Activate();
 	lightProgram.setVec4("lightColor", lightColor);
 
+	lineProgram.Activate();
+	lineProgram.setVec4("color", lightColor);
+
+//--------------------------------------initializing camera----------------------------------
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
-
+//--------------------------------------initializing models----------------------------------
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
 	std::string modelDir = "/Models/";
 
@@ -125,17 +130,42 @@ int main()
 	Model backpack((parentDir + modelDir + "backpack/backpack.obj"));
 	Model crow((parentDir + modelDir + "crow/scene.gltf"));
 
-	std::vector<glm::vec3> curvePoints = getCurvePoints();
+	std::vector<Curve> curves;
+	for (size_t i = 0; i < 4; i++)
+	{
+		curves.push_back(Curve());
+	}
 
+	curves[0].addControlPoint(0.0f, 0.0f, 0.0f);
+	curves[0].addControlPoint(5.0f, -10.0f, 0.0f);
+	curves[0].addControlPoint(10.0f, -5.0f, 15.0f);
+	curves[0].addControlPoint(15.0f, 0.0f, 15.0f);
+
+	curves[1].addControlPoint(15.0f, 0.0f, 15.0f);
+	curves[1].addControlPoint(20.0f, 0.0f, 15.0f);
+	curves[1].addControlPoint(5.0f, 0.0f, 30.0f);
+	curves[1].addControlPoint(0.0f, 0.0f, 30.0f);
+
+	curves[2].addControlPoint(0.0f, 0.0f, 30.0f);
+	curves[2].addControlPoint(-5.0f, 10.0f, 30.0f);
+	curves[2].addControlPoint(-10.0f, 5.0f, 15.0f);
+	curves[2].addControlPoint(-15.0f, 0.0f, 15.0f);
+
+	curves[3].addControlPoint(-15.0f, 0.0f, 15.0f);
+	curves[3].addControlPoint(-20.0f, 0.0f, 15.0f);
+	curves[3].addControlPoint(-5.0f, 0.0f, 0.0f);
+	curves[3].addControlPoint(0.0f, 0.0f, 0.0f);
+
+	Path path(curves);
+//--------------------------------------setting render settings----------------------------------
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CCW);
 	
+//--------------------------------------initializing animation variables----------------------------------
 	double prev_time = glfwGetTime();
-
-	//Temp vars
 	double prev_time_camera = glfwGetTime();
 	double prev_time_backpack = glfwGetTime();
 	glm::vec3 trans = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -157,7 +187,7 @@ int main()
 	Framebuffer framebuffer(width, height, "framebuffer.vert", "framebuffer.frag");
 
 
-
+//--------------------------------------rendering----------------------------------
 	while (!glfwWindowShouldClose(window))
 	{
 		double curr_time = glfwGetTime();
@@ -178,15 +208,15 @@ int main()
 
 		//-----------------------------------------------------------------Object Movement Zone-------------------------------------------------------------------
 		if (camera.getMoveCamera()) //If camera is first person
-			camera.setPosition(curvePoints[currentPoint] + glm::vec3(0.0f, 5.0f, 0.0f)); //Move camera
+			camera.setPosition(path.pathPoints[currentPoint] + glm::vec3(0.0f, 5.0f, 0.0f)); //Move camera
 
 		if (camera.getMoveObject()) {
 			if (curr_time - prev_time_backpack >= (double)(0.05f)) {
 
-				if (!(currentPoint + 1 < curvePoints.size()))
-					temp = curvePoints[currentPoint] - curvePoints[0];
+				if (!(currentPoint + 1 < path.pathPoints.size()))
+					temp = path.pathPoints[currentPoint] - path.pathPoints[0];
 				else
-					temp = curvePoints[currentPoint] - curvePoints[currentPoint + 1];
+					temp = path.pathPoints[currentPoint] - path.pathPoints[currentPoint + 1];
 
 				if (temp.z < 0) {
 					RotationAnglePitch = -atan(temp.y / temp.z);
@@ -200,15 +230,16 @@ int main()
 				RotationY = glm::quat(cos(RotationAngleYaw / 2), 0.0f, sin(RotationAngleYaw / 2), 0.0f);
 				RotationZ = glm::quat(cos(RotationAnglePitch / 2), sin(RotationAnglePitch / 2), 0.0f, 0.0f);
 				rot = RotationX * RotationY * RotationZ;
-				trans = curvePoints[currentPoint];
+				trans = path.pathPoints[currentPoint];
 				++currentPoint;
-				if (!(currentPoint < curvePoints.size()))
+				if (!(currentPoint < path.pathPoints.size()))
 					currentPoint = 0;
 				prev_time_backpack = glfwGetTime();
 			}
 		}
-
 		//-----------------------------------------------------------------End of Zone------------------------------------------------------------
+
+		path.Draw(lineProgram, camera);
 
 		glDisable(GL_CULL_FACE);
 		glm::mat4 lightModel = glm::mat4(1.0f);
@@ -244,47 +275,4 @@ int main()
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
-}
-
-std::vector<glm::vec3> getCurvePoints() {
-	Curve curve1, curve2, curve3, curve4;
-
-	curve1.addControlPoint(0.0f, 0.0f, 0.0f);
-	curve1.addControlPoint(5.0f, -10.0f, 0.0f);
-	curve1.addControlPoint(10.0f, -5.0f, 15.0f);
-	curve1.addControlPoint(15.0f, 0.0f, 15.0f);
-
-	curve2.addControlPoint(15.0f, 0.0f, 15.0f);
-	curve2.addControlPoint(20.0f, 0.0f, 15.0f);
-	curve2.addControlPoint(5.0f, 0.0f, 30.0f);
-	curve2.addControlPoint(0.0f, 0.0f, 30.0f);
-
-	curve3.addControlPoint(0.0f, 0.0f, 30.0f);
-	curve3.addControlPoint(-5.0f, 10.0f, 30.0f);
-	curve3.addControlPoint(-10.0f, 5.0f, 15.0f);
-	curve3.addControlPoint(-15.0f, 0.0f, 15.0f);
-
-	curve4.addControlPoint(-15.0f, 0.0f, 15.0f);
-	curve4.addControlPoint(-20.0f, 0.0f, 15.0f);
-	curve4.addControlPoint(-5.0f, 0.0f, 0.0f);
-	curve4.addControlPoint(0.0f, 0.0f, 0.0f);
-
-
-	// Vul 1 vector met alle punten
-	std::vector<glm::vec3> curvePoints = curve1.getCurve();
-	std::vector<glm::vec3> tempPoints;
-	tempPoints = curve2.getCurve();
-	for (int i = 1; i < tempPoints.size(); ++i) {
-		curvePoints.push_back(tempPoints[i]);
-	}
-	tempPoints = curve3.getCurve();
-	for (int i = 1; i < tempPoints.size(); ++i) {
-		curvePoints.push_back(tempPoints[i]);
-	}
-	tempPoints = curve4.getCurve();
-	for (int i = 1; i < tempPoints.size() - 1; ++i) {
-		curvePoints.push_back(tempPoints[i]);
-	}
-
-	return curvePoints;
 }
