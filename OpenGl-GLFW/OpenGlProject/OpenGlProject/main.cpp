@@ -6,6 +6,10 @@
 #include <filesystem>
 #include <cmath>
 
+#include <irrKlang/irrKlang.h>
+using namespace irrklang;
+#pragma comment(lib, "irrKlang.lib")
+
 const unsigned int width = 1920;
 const unsigned int height = 1080;
 float gamma = 2.2f;
@@ -59,7 +63,11 @@ std::vector<glm::vec3> getCurvePoints(std::vector<Curve> path);
 
 int main()
 {
-//--------------------------------------initializing window----------------------------------
+	ISoundEngine* engine = createIrrKlangDevice();
+	if (!engine)
+		return 0;
+	engine->setSoundVolume(0.25f);
+
 	glfwInit();
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -181,6 +189,10 @@ int main()
 
 	bool moveCamera = false;
 	bool moveBackpack = true;
+	bool firstPersonWasOff = true;
+	bool firstPersonWasOn = false;
+	bool brakesWereOff = true;
+	bool brakesWereOn = false;
 	int currentPoint = 0;
 	//End Temp vars
 	
@@ -207,10 +219,24 @@ int main()
 		camera.updateMatrix(90.0f, 0.1f, 100.0f);
 
 		//-----------------------------------------------------------------Object Movement Zone-------------------------------------------------------------------
-		if (camera.getMoveCamera()) //If camera is first person
-			camera.setPosition(path.pathPoints[currentPoint] + glm::vec3(0.0f, 5.0f, 0.0f)); //Move camera
-
+		if (camera.getMoveCamera()){ //If camera is first person
+			if(firstPersonWasOff)
+				engine->play2D("Media/eyebrow.wav");
+			camera.setPosition(curvePoints[currentPoint] + glm::vec3(0.0f, 5.0f, 0.0f)); //Move camera
+			firstPersonWasOff = false; 
+			firstPersonWasOn = true;
+		}
+		else {
+			if(firstPersonWasOn)
+				engine->play2D("Media/eyebrow.wav");
+			firstPersonWasOff = true;
+			firstPersonWasOn = false;
+		}
 		if (camera.getMoveObject()) {
+			if (brakesWereOn)
+				engine->play2D("Media/motor.wav");
+			brakesWereOff = true; 
+			brakesWereOn = false;
 			if (curr_time - prev_time_backpack >= (double)(0.05f)) {
 
 				if (!(currentPoint + 1 < path.pathPoints.size()))
@@ -237,6 +263,13 @@ int main()
 				prev_time_backpack = glfwGetTime();
 			}
 		}
+		else {
+			if (brakesWereOff)
+				engine->play2D("Media/brakes.wav");
+			brakesWereOff = false;
+			brakesWereOn = true;
+		}
+
 		//-----------------------------------------------------------------End of Zone------------------------------------------------------------
 
 		path.Draw(lineProgram, camera);
