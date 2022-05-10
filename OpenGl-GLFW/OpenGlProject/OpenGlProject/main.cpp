@@ -66,7 +66,7 @@ int main()
 	ISoundEngine* engine = createIrrKlangDevice();
 	if (!engine)
 		return 0;
-	engine->setSoundVolume(0.25f);
+	engine->setSoundVolume(0.15f);
 
 	glfwInit();
 
@@ -97,7 +97,7 @@ int main()
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec4 sunColor = glm::vec4((243.0f / 255.0f), (100.0f / 255.0f), (20.0f / 255.0f), 1.0f);
-	sunColor *= 10000;
+	sunColor *= 2500;
 	lightColor *= 50;
 	glm::vec3 earthPos = glm::vec3(0.0f, -10.0f, -15.0f);
 	glm::vec3 sunPos = glm::vec3(-100.0f, 20.0f, 90.0f);
@@ -157,22 +157,22 @@ int main()
 
 	curves[0].addControlPoint(0.0f, 0.0f, 0.0f);
 	curves[0].addControlPoint(5.0f, -10.0f, 0.0f);
-	curves[0].addControlPoint(10.0f, -5.0f, 15.0f);
+	curves[0].addControlPoint(10.0f, -2.0f, 15.0f);
 	curves[0].addControlPoint(15.0f, 0.0f, 15.0f);
 
 	curves[1].addControlPoint(15.0f, 0.0f, 15.0f);
-	curves[1].addControlPoint(20.0f, 0.0f, 15.0f);
-	curves[1].addControlPoint(5.0f, 0.0f, 30.0f);
+	curves[1].addControlPoint(20.0f, 2.0f, 15.0f);
+	curves[1].addControlPoint(5.0f, 5.0f, 30.0f);
 	curves[1].addControlPoint(0.0f, 0.0f, 30.0f);
 
 	curves[2].addControlPoint(0.0f, 0.0f, 30.0f);
-	curves[2].addControlPoint(-5.0f, 10.0f, 30.0f);
-	curves[2].addControlPoint(-10.0f, 5.0f, 15.0f);
+	curves[2].addControlPoint(-5.0f, -4.0f, 30.0f);
+	curves[2].addControlPoint(-10.0f, -3.0f, 15.0f);
 	curves[2].addControlPoint(-15.0f, 0.0f, 15.0f);
 
 	curves[3].addControlPoint(-15.0f, 0.0f, 15.0f);
-	curves[3].addControlPoint(-20.0f, 0.0f, 15.0f);
-	curves[3].addControlPoint(-5.0f, 0.0f, 0.0f);
+	curves[3].addControlPoint(-20.0f, 50.0f, 15.0f);
+	curves[3].addControlPoint(-5.0f, 1.0f, 0.0f);
 	curves[3].addControlPoint(0.0f, 0.0f, 0.0f);
 
 	Path path(curves);
@@ -283,20 +283,20 @@ int main()
 		//-----------------------------------------------------------------Object Movement Zone-------------------------------------------------------------------
 		if (camera.getMoveCamera()){ //If camera is first person
 			if(firstPersonWasOff)
-				engine->play2D("Media/eyebrow.wav");
+				engine->play2D("Media/teleport.wav");
 			camera.setPosition(path.pathPoints[currentPoint] + glm::vec3(0.0f, 5.0f, 0.0f)); //Move camera
 			firstPersonWasOff = false; 
 			firstPersonWasOn = true;
 		}
 		else {
 			if(firstPersonWasOn)
-				engine->play2D("Media/eyebrow.wav");
+				engine->play2D("Media/teleport.wav");
 			firstPersonWasOff = true;
 			firstPersonWasOn = false;
 		}
 		if (camera.getMoveObject()) {
 			if (brakesWereOn)
-				engine->play2D("Media/motor.wav");
+				engine->play2D("Media/time_start.wav");
 			brakesWereOff = true; 
 			brakesWereOn = false;
 			if (curr_time - prev_time_backpack >= (double)(0.05f)) {
@@ -307,16 +307,16 @@ int main()
 					temp = path.pathPoints[currentPoint] - path.pathPoints[currentPoint + 1];
 
 				if (temp.z < 0) {
-					RotationAnglePitch = -atan(temp.y / temp.z);
-					RotationAngleYaw = atan(temp.x / temp.z);
+					RotationAnglePitch = atan(temp.y / temp.z);
+					RotationAngleYaw = atan(temp.x / temp.z) - M_PI_2;
 				}
 				else {
-					RotationAngleYaw = M_PI + atan(temp.x / temp.z);
-					RotationAnglePitch = atan(temp.y / temp.z);
+					RotationAngleYaw = atan(temp.x / temp.z) + M_PI_2;
+					RotationAnglePitch = -atan(temp.y / temp.z);
 				}
 
 				RotationY = glm::quat(cos(RotationAngleYaw / 2), 0.0f, sin(RotationAngleYaw / 2), 0.0f);
-				RotationZ = glm::quat(cos(RotationAnglePitch / 2), sin(RotationAnglePitch / 2), 0.0f, 0.0f);
+				RotationZ = glm::quat(cos(RotationAnglePitch / 2), 0.0f, 0.0f, sin(RotationAnglePitch / 2));
 				rot = RotationX * RotationY * RotationZ;
 				trans = path.pathPoints[currentPoint];
 				++currentPoint;
@@ -327,7 +327,7 @@ int main()
 		}
 		else {
 			if (brakesWereOff)
-				engine->play2D("Media/brakes.wav");
+				engine->play2D("Media/time_stop.wav");
 			brakesWereOff = false;
 			brakesWereOn = true;
 		}

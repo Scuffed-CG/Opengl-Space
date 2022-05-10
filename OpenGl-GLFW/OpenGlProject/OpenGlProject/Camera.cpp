@@ -55,14 +55,14 @@ void Camera::Inputs(GLFWwindow* window)
 		isFirstPersonToggleButtonReleased = true;
 	}
 	//Object movement toggle keybind
-	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
 	{
 		if (isObjectMovementToggleButtonReleased) {
 			moveObject = !moveObject;
 			isObjectMovementToggleButtonReleased = false;
 		}
 	}
-	else if (glfwGetKey(window, GLFW_KEY_M) == GLFW_RELEASE)
+	else if (glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE)
 	{
 		isObjectMovementToggleButtonReleased = true;
 	}
