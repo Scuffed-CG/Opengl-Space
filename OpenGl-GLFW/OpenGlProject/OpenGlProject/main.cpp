@@ -94,30 +94,43 @@ int main()
 	Shader lightProgram("light.vert", "light.frag");
 	Shader lineProgram("line.vert", "line.frag");
 
-	glm::vec4 lightColor = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec4 sunColor = glm::vec4((243.0f / 255.0f), (100.0f / 255.0f), (20.0f / 255.0f), 1.0f);
+	sunColor *= 10000;
+	lightColor *= 50;
+	glm::vec3 earthPos = glm::vec3(0.0f, -10.0f, -15.0f);
+	glm::vec3 sunPos = glm::vec3(-100.0f, 20.0f, 90.0f);
 
 	shaderProgram.Activate();
-	shaderProgram.setVec3("dirLight.color", 1.0f, 1.0f, 1.0f);
+	shaderProgram.setVec3("dirLight.color", 0.0f, 0.0f, 0.0f);
 	shaderProgram.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
 	shaderProgram.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
 	shaderProgram.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 	shaderProgram.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);	
 
-	shaderProgram.setVec3("pointLights[0].position", 0.5f, 0.5f, 0.5f);
-	shaderProgram.setVec3("pointLights[0].color", lightColor.r, lightColor.g, lightColor.b);
+	shaderProgram.setVec3("pointLights[0].position", earthPos);
+	shaderProgram.setVec3("pointLights[0].color", lightColor);
 	shaderProgram.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
 	shaderProgram.setVec3("pointLights[0].diffuse", 0.4f, 0.4f, 0.4f);
 	shaderProgram.setVec3("pointLights[0].specular", 0.5f, 0.5f, 0.5f);
 	shaderProgram.setFloat("pointLights[0].constant", 1.0f);
 	shaderProgram.setFloat("pointLights[0].linear", 0.09f);
-	shaderProgram.setFloat("pointLights[0].quadratic", 0.032f);
+	shaderProgram.setFloat("pointLights[0].quadratic", 0.032f);	
+
+	shaderProgram.setVec3("pointLights[1].position", sunPos);
+	shaderProgram.setVec3("pointLights[1].color", sunColor);
+	shaderProgram.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+	shaderProgram.setVec3("pointLights[1].diffuse", 0.4f, 0.4f, 0.4f);
+	shaderProgram.setVec3("pointLights[1].specular", 0.5f, 0.5f, 0.5f);
+	shaderProgram.setFloat("pointLights[1].constant", 1.0f);
+	shaderProgram.setFloat("pointLights[1].linear", 0.09f);
+	shaderProgram.setFloat("pointLights[1].quadratic", 0.032f);
 
 	lightProgram.Activate();
 	lightProgram.setVec4("lightColor", lightColor);
 
 	lineProgram.Activate();
-	lineProgram.setVec4("color", lightColor);
+	lineProgram.setVec4("color", 0.5f, 0.5f, 0.3f, 1.0f);
 
 //--------------------------------------initializing camera----------------------------------
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
@@ -126,17 +139,14 @@ int main()
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
 	std::string modelDir = "/Models/";
 
-	std::vector<Texture> textures =
-	{
-		Texture((parentDir + modelDir + "/textures/diffuse.png").c_str(), "diffuse", 0),
-		Texture((parentDir + modelDir + "/textures/normal.png").c_str(), "normal", 1),
-	};
+	std::vector<Texture> textures;
 
-	Mesh plane(vertices, indices, textures);
 	Mesh lightCube(lightVertices, lightIndices, textures);
 
-	Model backpack((parentDir + modelDir + "backpack/backpack.obj"));
-	Model crow((parentDir + modelDir + "crow/scene.gltf"));
+	Model astronaut((parentDir + modelDir + "astronaut/scene.gltf"));
+	Model earth((parentDir + modelDir + "earth/scene.gltf"));
+	Model sun((parentDir + modelDir + "sun/scene.gltf"));
+	Model spaceship((parentDir + modelDir + "spaceship/scene.gltf"));
 
 	std::vector<Curve> curves;
 	for (size_t i = 0; i < 4; i++)
@@ -206,7 +216,7 @@ int main()
 
 		framebuffer.Bind();
 
-		glClearColor(pow(0.07f, gamma), pow(0.13f, gamma), pow(0.17f, gamma), 1.0f);
+		glClearColor(pow((7.0f/255.0f), gamma), pow((8.0f/255.0f), gamma), pow((8.0f/255.0f), gamma), 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
@@ -216,13 +226,13 @@ int main()
 			prev_time = glfwGetTime();
 		}
 
-		camera.updateMatrix(90.0f, 0.1f, 100.0f);
+		camera.updateMatrix(90.0f, 0.1f, 1000.0f);
 
 		//-----------------------------------------------------------------Object Movement Zone-------------------------------------------------------------------
 		if (camera.getMoveCamera()){ //If camera is first person
 			if(firstPersonWasOff)
 				engine->play2D("Media/eyebrow.wav");
-			camera.setPosition(curvePoints[currentPoint] + glm::vec3(0.0f, 5.0f, 0.0f)); //Move camera
+			camera.setPosition(path.pathPoints[currentPoint] + glm::vec3(0.0f, 5.0f, 0.0f)); //Move camera
 			firstPersonWasOff = false; 
 			firstPersonWasOn = true;
 		}
@@ -274,21 +284,23 @@ int main()
 
 		path.Draw(lineProgram, camera);
 
-		glDisable(GL_CULL_FACE);
-		glm::mat4 lightModel = glm::mat4(1.0f);
-		lightModel = glm::translate(lightModel, lightPos);
-		lightCube.Draw(lightProgram, camera, lightModel);
-		glEnable(GL_CULL_FACE);
 
 		glCullFace(GL_BACK);
 		if(!camera.getMoveCamera())// If first person don't draw the moving object
-			backpack.Draw(shaderProgram, camera, trans, rot);
-		crow.Draw(shaderProgram, camera, { 0.0f, 0.0f, -10.0f }, { 0.0f, 0.0f, 0.0f, 0.0f}, { 0.5f, 0.5f, 0.5f });
-
-		backpack.Draw(shaderProgram, camera);
-		crow.Draw(shaderProgram, camera);
-
+			spaceship.Draw(shaderProgram, camera, trans, rot, glm::vec3(0.5f));
+		earth.Draw(shaderProgram, camera, earthPos, glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(10.0f));
+		sun.Draw(shaderProgram, camera, sunPos, glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(2.0f));
+		astronaut.Draw(shaderProgram, camera, glm::vec3(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(0.2f));
 		glCullFace(GL_FRONT);
+
+
+		glDisable(GL_CULL_FACE);
+		glm::mat4 lightModel = glm::mat4(1.0f);
+		lightModel = glm::translate(lightModel, earthPos);
+		lightProgram.Activate();
+		lightProgram.setVec4("lightColor", lightColor);
+		lightCube.Draw(lightProgram, camera, lightModel);
+		glEnable(GL_CULL_FACE);
 
 		GLint mode;
 		glGetIntegerv(GL_POLYGON_MODE, &mode);

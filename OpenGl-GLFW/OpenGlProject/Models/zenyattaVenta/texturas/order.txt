@@ -1,0 +1,4 @@
+ai ambient occlusion = pierna
+ai switch = ropa
+ai wireframe = cabeza
+shaderfxgame = brazos

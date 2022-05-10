@@ -32,7 +32,7 @@ struct PointLight {
     vec3 specular;
 };  
 
-#define NR_POINT_LIGHTS 1
+#define NR_POINT_LIGHTS 2
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform DirLight dirLight;
 
@@ -135,7 +135,7 @@ void main()
     FragColor = vec4(result, 1.0);
 
 	float brightness = dot(FragColor.rgb, vec3(0.2126f, 0.7152f, 0.0722));
-	if(brightness > 1.0f){
+	if(brightness > 0.8f){
 		BloomColor = vec4(FragColor.rgb, 1.0f);
 	}
 	else{
