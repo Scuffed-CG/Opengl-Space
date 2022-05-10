@@ -102,10 +102,6 @@
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="line.vert">
-    <None Include="picking.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="picking.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>
