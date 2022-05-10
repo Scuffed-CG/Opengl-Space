@@ -255,11 +255,13 @@ int main()
 			if (pickedID == earth.id) {
 				shaderProgram.Activate();
 				if (earthWasoff) {
+					engine->play2D("Media/on.wav");
 					shaderProgram.setVec3("pointLights[0].color", lightColor);
 					earthWasoff = false;
 				}
 				else
 				{
+					engine->play2D("Media/off.wav");
 					shaderProgram.setVec3("pointLights[0].color", glm::vec3(0.0f));
 					earthWasoff = true;
 				}
@@ -269,11 +271,13 @@ int main()
 			{
 				shaderProgram.Activate();
 				if (sunWasoff) {
+					engine->play2D("Media/on.wav");
 					shaderProgram.setVec3("pointLights[1].color", sunColor);
 					sunWasoff = false;
 				}
 				else
 				{
+					engine->play2D("Media/off.wav");
 					shaderProgram.setVec3("pointLights[1].color", glm::vec3(0.0f));
 					sunWasoff = true;
 				}		
