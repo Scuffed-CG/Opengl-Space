@@ -54,4 +54,5 @@ void Path::calcPoints() {
 		tmpPoints = path[i].getCurve();
 		pathPoints.insert(pathPoints.end(), tmpPoints.begin(), tmpPoints.end());
 	}
+	pathPoints.push_back(pathPoints[0]);
 }

@@ -14,22 +14,6 @@ const unsigned int width = 1920;
 const unsigned int height = 1080;
 float gamma = 2.2f;
 
-std::vector<Vertex> vertices =
-{
-	Vertex{glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
-	Vertex{glm::vec3(1.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(1.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f)}
-};
-
-
-
-std::vector<GLuint> indices =
-{
-	0, 1, 2,
-	0, 2, 3
-};
-
 std::vector<Vertex> lightVertices =
 { //     COORDINATES     //
 	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f), glm::vec2(0.0f, 0.0f)},
@@ -57,7 +41,6 @@ std::vector<GLuint> lightIndices =
 	4, 5, 6,
 	4, 6, 7
 };
-
 
 int main()
 {
@@ -95,7 +78,7 @@ int main()
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec4 sunColor = glm::vec4((243.0f / 255.0f), (100.0f / 255.0f), (20.0f / 255.0f), 1.0f);
-	sunColor *= 2500;
+	sunColor *= 5000;
 	lightColor *= 50;
 	glm::vec3 earthPos = glm::vec3(0.0f, -10.0f, -15.0f);
 	glm::vec3 sunPos = glm::vec3(-100.0f, 20.0f, 90.0f);
@@ -250,6 +233,7 @@ int main()
 				data[1] * 256 +
 				data[2] * 256 * 256;
 			//-----------------------------------------------------------------Pickking Effect Zone-------------------------------------------------------------------
+			//this should be identical to the actual render sadly the drawing of the scene is reliant on many variables from the main so extracting would be tedious and difficult
 			if (pickedID == earth.id) {
 				shaderProgram.Activate();
 				if (earthWasoff) {
@@ -334,8 +318,7 @@ int main()
 			brakesWereOn = true;
 		}
 
-		//-----------------------------------------------------------------End of Zone------------------------------------------------------------
-
+		//-----------------------------------------------------------------Drawing Zone------------------------------------------------------------
 		path.Draw(lineProgram, camera);
 
 		glCullFace(GL_BACK);
@@ -344,23 +327,21 @@ int main()
 		earth.Draw(shaderProgram, camera, earthPos, glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(10.0f));
 		sun.Draw(shaderProgram, camera, sunPos, glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(2.0f));
 		astronaut.Draw(shaderProgram, camera, glm::vec3(2.0f, 3.0f, -3.0f), glm::quat(cos(M_PI_4 / 2), sin(M_PI_4 / 2), 0.0f, 0.0f), glm::vec3(0.2f));
+		astronaut.Draw(shaderProgram, camera, glm::vec3(-50.0f, 30.0f, 40.0f), glm::quat(cos(M_PI_4 / 2), sin(M_PI_4 / 2), 0.0f, 0.0f), glm::vec3(0.2f));
 		glCullFace(GL_FRONT);
 
+		//-----------------------------------------------------------------Buffer Zone------------------------------------------------------------
 		GLint mode;
 		glGetIntegerv(GL_POLYGON_MODE, &mode);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 		framebuffer.Draw();
-
 		glPolygonMode(GL_FRONT_AND_BACK, mode);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-
 	shaderProgram.Delete();
-
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
