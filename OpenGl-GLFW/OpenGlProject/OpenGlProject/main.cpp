@@ -16,10 +16,10 @@ float gamma = 2.2f;
 
 std::vector<Vertex> vertices =
 {
-	Vertex{glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
-	Vertex{glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f)}
+	Vertex{glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f)}
 };
 
 
@@ -32,14 +32,14 @@ std::vector<GLuint> indices =
 
 std::vector<Vertex> lightVertices =
 { //     COORDINATES     //
-	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(0.1f, -0.1f, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(0.1f, -0.1f,  0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(0.1f,  0.1f, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(0.1f,  0.1f,  0.1f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)}
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f), glm::vec2(0.0f, 0.0f)}
 };
 
 std::vector<GLuint> lightIndices =
@@ -59,8 +59,6 @@ std::vector<GLuint> lightIndices =
 };
 
 
-std::vector<glm::vec3> getCurvePoints(std::vector<Curve> path);
-
 int main()
 {
 	ISoundEngine* engine = createIrrKlangDevice();
@@ -68,7 +66,7 @@ int main()
 		return 0;
 	engine->setSoundVolume(0.15f);
 
-	glfwInit();
+	glfwInit(); 
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

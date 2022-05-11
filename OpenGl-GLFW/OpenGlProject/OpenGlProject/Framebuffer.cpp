@@ -1,17 +1,16 @@
 #include "Framebuffer.h"
 
-Framebuffer::Framebuffer(const unsigned int width, const unsigned int height, const char* vertexFile, const char* fragmentFile) : framebufferProgram(vertexFile, fragmentFile) ,blurProgram(vertexFile, "blur.frag"){
+Framebuffer::Framebuffer(const unsigned int width, const unsigned int height, const char* vertexFile, const char* fragmentFile) : framebufferProgram(vertexFile, fragmentFile) ,blurProgram(vertexFile, "blur.frag"), rectVBO(vertices) {
 	float gamma = 2.2f;
-	float rectangleVertices[] =
+	std::vector<Vertex> vertices =
 	{
 		//  Coords   // texCoords
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		-1.0f,  1.0f,  0.0f, 1.0f,
-
-		 1.0f,  1.0f,  1.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		-1.0f,  1.0f,  0.0f, 1.0f
+		Vertex{glm::vec3(1.0f, -1.0f, 0.0f),  glm::vec2(1.0f, 0.0f)},
+		Vertex{glm::vec3(-1.0f, -1.0f, 0.0f),  glm::vec2(0.0f, 0.0f)},
+		Vertex{glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+		Vertex{glm::vec3(1.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
+		Vertex{glm::vec3(1.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
+		Vertex{glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f)}
 	};
 	
 
@@ -25,15 +24,10 @@ Framebuffer::Framebuffer(const unsigned int width, const unsigned int height, co
 	glUniform1i(glGetUniformLocation(blurProgram.ID, "screenTexture"), 0);
 	
 
-	glGenVertexArrays(1, &rectVAO);
-	glGenBuffers(1, &rectVBO);
-	glBindVertexArray(rectVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, rectVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleVertices), &rectangleVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	
+	rectVAO.Bind();
+	rectVAO.LinkAttrib(rectVBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
+	rectVAO.LinkAttrib(rectVBO, 1, 2, GL_FLOAT, sizeof(Vertex), (void*)(offsetof(Vertex, texCoords)));
 
 	glGenFramebuffers(1, &ID);
 	glBindFramebuffer(GL_FRAMEBUFFER, ID);
@@ -108,7 +102,7 @@ void Framebuffer::Draw() {
 		{
 			glBindTexture(GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
 		}
-		glBindVertexArray(rectVAO);
+		rectVAO.Bind();
 		glDisable(GL_DEPTH_TEST);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -119,7 +113,7 @@ void Framebuffer::Draw() {
 	glDisable(GL_DEPTH_TEST);
 
 	framebufferProgram.Activate();
-	glBindVertexArray(rectVAO);
+	rectVAO.Bind();
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
