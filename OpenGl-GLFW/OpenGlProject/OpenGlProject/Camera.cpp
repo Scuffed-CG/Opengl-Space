@@ -69,19 +69,19 @@ void Camera::Inputs(GLFWwindow* window)
 
 	if (!moveCamera) {
 		//Movement keybinds
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		{
 			Position += speed * Orientation;
 		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
 			Position += speed * -glm::normalize(glm::cross(Orientation, Up));
 		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
 			Position += speed * -Orientation;
 		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
 			Position += speed * glm::normalize(glm::cross(Orientation, Up));
 		}
