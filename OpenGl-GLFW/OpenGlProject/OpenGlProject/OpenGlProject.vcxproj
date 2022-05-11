@@ -178,7 +178,6 @@
     <None Include="line.frag" />
     <None Include="line.vert" />
     <None Include="pick.frag" />
-    <None Include="pick.vert" />
     <None Include="Survival_BackPack_2\Survival_BackPack_2.fbx" />
   </ItemGroup>
   <ItemGroup>
