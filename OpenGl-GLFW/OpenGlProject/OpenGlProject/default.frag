@@ -29,7 +29,7 @@ struct PointLight {
     vec3 specular;
 };  
 
-#define NR_POINT_LIGHTS 2
+#define NR_POINT_LIGHTS 3
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform DirLight dirLight;
 
@@ -53,14 +53,12 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 crntPos, vec3 viewDir)
     
     vec3 ambient  = light.ambient  * vec3(texture(diffuse0, texCoord));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(diffuse0, texCoord));
-    vec3 specular = vec3(0.0f, 0.0f, 0.0f);
-
-    if(diff != 0.0f)
-        vec3 specular = light.specular * spec * vec3(texture(specular0, texCoord));
+    vec3 specular  = light.specular * spec * vec3(texture(specular0, texCoord));
 
     ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
+
     return (ambient + diffuse + specular) * light.color;
 }
 

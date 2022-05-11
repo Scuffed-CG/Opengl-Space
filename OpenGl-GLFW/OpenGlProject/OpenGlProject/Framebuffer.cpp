@@ -111,7 +111,6 @@ void Framebuffer::Draw() {
 
 	Unbind();
 	glDisable(GL_DEPTH_TEST);
-
 	framebufferProgram.Activate();
 	rectVAO.Bind();
 
